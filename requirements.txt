@@ -1,0 +1,4 @@
+bs4
+oauth2
+requests
+spotipy
