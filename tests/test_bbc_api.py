@@ -1,5 +1,5 @@
 import unittest
-from src.bbc_api import parse_program_id, fetch_playlist_from_program
+from src.bbc_api import parse_program_id, fetch_playlist_from_program, fetch_program_names
 
 
 class BbcApiTest(unittest.TestCase):
@@ -11,6 +11,10 @@ class BbcApiTest(unittest.TestCase):
     def test_fetch_playlist_from_program(self):
         playlist = fetch_playlist_from_program('m000320s')
         print(playlist)
+
+    def test_get_program_names(self):
+        program_names = fetch_program_names()
+        print(program_names)
 
 
 if __name__ == "__main__":

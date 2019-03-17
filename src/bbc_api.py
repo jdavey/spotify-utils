@@ -28,7 +28,8 @@ def fetch_playlist_from_program(program_id):
     tracks = player_soup.find_all("li", "sc-c-tracklist__track")
     return list(map(lambda track: track.attrs['title'], tracks))
 
-if __name__ == "__main__":
+
+def fetch_program_names():
     response = requests.get(EPISODE_URL)
     if response.status_code != 200:
         logger.error("Unable to read URL %s response: %d" % (EPISODE_URL, response.status_code))
@@ -37,4 +38,4 @@ if __name__ == "__main__":
     soup = BeautifulSoup(response.content)
     program_names = list(
         map(lambda link: parse_program_id(link.attrs['href']), soup.find_all("a", "br-blocklink__link")))
-    print(program_names)
+    return program_names
