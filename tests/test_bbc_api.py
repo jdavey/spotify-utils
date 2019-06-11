@@ -9,7 +9,7 @@ class BbcApiTest(unittest.TestCase):
         self.assertEquals(program_name_expected, parse_program_id(link), msg="program name parsed correctly")
 
     def test_fetch_playlist_from_program(self):
-        playlist = fetch_playlist_from_program('m000320s')
+        playlist = fetch_playlist_from_program('m0005v11')
         print(playlist)
 
     def test_get_program_names(self):

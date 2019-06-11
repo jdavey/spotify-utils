@@ -15,9 +15,23 @@ def parse_program_id(link):
 def get_program_player_url(program_id):
     return "https://www.bbc.co.uk/sounds/play/%s" % program_id
 
+def get_program_url(program_id):
+    return "https://www.bbc.co.uk/programmes/%s" % program_id
+
+
+def _parse_track_from_span(track_span):
+    details = track_span.contents
+    if len(details) > 4:
+        artist = details[1].find("span").contents
+        title = details[3].find("span").contents
+        return f"{artist[0]} - {title[0]}"
+
+    return None
+
+
 
 def fetch_playlist_from_program(program_id):
-    program_url = get_program_player_url(program_id)
+    program_url = get_program_url(program_id)
     logger.info("Program URL: %s" % program_url)
     player_page_response = requests.get(program_url)
     if player_page_response.status_code != 200:
@@ -25,8 +39,8 @@ def fetch_playlist_from_program(program_id):
         sys.exit(1)
 
     player_soup = BeautifulSoup(player_page_response.content)
-    tracks = player_soup.find_all("li", "sc-c-tracklist__track")
-    return list(map(lambda track: track.attrs['title'], tracks))
+    tracks = player_soup.find_all("div", "segment__track")
+    return list(filter(lambda details: details, map(lambda track: _parse_track_from_span(track), tracks)))
 
 
 def fetch_program_names():

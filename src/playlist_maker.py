@@ -6,10 +6,14 @@ token = os.environ['SPOTIFY_TOKEN']
 spotify_api = SpotifyApi(token)
 
 if __name__ == "__main__":
+    # playlist_id = "7kYarjUU5jN5hFPMmiCTN2"
     playlist_id = "7kYarjUU5jN5hFPMmiCTN2"
-    program_names = fetch_program_names()
 
-    for program_name in reversed(program_names):
+    # playlist_id = "20JGSnhbas26vwufCpq2dj"
+
+    program_names = [fetch_program_names()[0]]
+
+    for program_name in program_names:
         tracks = fetch_playlist_from_program(program_name)
         uris = []
         for track in tracks:
