@@ -7,18 +7,17 @@ spotify_api = SpotifyApi(token)
 
 if __name__ == "__main__":
     # playlist_id = "7kYarjUU5jN5hFPMmiCTN2"
-    playlist_id = "7kYarjUU5jN5hFPMmiCTN2"
-
-    # playlist_id = "20JGSnhbas26vwufCpq2dj"
-
+    playlist_ids = [
+        "7kYarjUU5jN5hFPMmiCTN2"
+    ]
     program_names = [fetch_program_names()[0]]
 
-    for program_name in program_names:
+    for playlist_id, program_name in zip(playlist_ids, program_names):
         tracks = fetch_playlist_from_program(program_name)
         uris = []
         for track in tracks:
             # print(track)
-            result = spotify_api.search(track)
+            result = spotify_api.search(track)["tracks"]["items"]
             if not len(result):
                 print("Could not find track %s" % track)
 
@@ -29,7 +28,7 @@ if __name__ == "__main__":
                     # strip out ( )
                     track_stripped = track[0:index_of_param]
                     print("Trying %s..." % track_stripped)
-                    result = spotify_api.search(track_stripped)
+                    result = spotify_api.search(track_stripped)["tracks"]["items"]
 
                     if not len(result):
                         print("Still couldn't find it..")

@@ -26,12 +26,6 @@ class SpotifyApi:
         search_url = "%s/search" % BASE_URL
         search_response = requests.get(search_url, params=params, headers=self._get_headers())
         search_payload = search_response.json()
-        if search_payload['tracks']['items']:
-            return search_payload['tracks']['items']
-        else:
-            print("No results found")
-            return []
-
         return search_payload
 
     def get_or_create_playlist(self, name, description, public=True):
@@ -75,6 +69,7 @@ class SpotifyApi:
         response = requests.post(url, json=payload, headers=self._get_headers())
         print(response)
 
-if __name__ == "__main__":
-    token = "BQC4iHLp_JjY6F_ZkyPU4WUe8OH1ikIRmtUvaLP1IW-Jon43atfxkiy8wPa5perZRuyFXOOesAffBmZg-STX4qp_JZdNFJm6MzxlbpGTiAUs6T0Fyp9s17Rn57SeCQFzU7hxsPqFuDfgnxJinDMxgO-JuuOSy18G351Nd5Uoz3U15MxzS6HL5aLy4e0FA-pMO_5rMxQHRQnhSEc"
-    api = SpotifyApi(token)
+    def get_tracks_from_album(self, album_id):
+        url = f"{BASE_URL}/albums/{album_id}/tracks"
+        response = requests.get(url, headers=self._get_headers())
+        return response.json()
