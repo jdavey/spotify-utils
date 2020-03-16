@@ -25,8 +25,26 @@ class SpotifyApi:
 
         search_url = "%s/search" % BASE_URL
         search_response = requests.get(search_url, params=params, headers=self._get_headers())
+        if search_response.status_code != 200:
+            raise Exception(f"Bad status code {search_response.status_code}")
+
         search_payload = search_response.json()
         return search_payload
+
+    def create_playlist(self, name, description, user_name, public=True):
+        playlist_url = f"{BASE_URL}/users/{user_name}/playlists"
+
+        payload = {
+            "name": name,
+            "description": description,
+            "public": public
+        }
+
+        playlist_create_response = requests.post(playlist_url, json=payload, headers=self._get_headers())
+        if playlist_create_response.status_code == 201:
+            return playlist_create_response.json().get('id', None)
+
+        raise Exception(f"Bad status code on playlist creation {playlist_create_response.status_code}")
 
     def get_or_create_playlist(self, name, description, public=True):
         params = {
@@ -73,3 +91,30 @@ class SpotifyApi:
         url = f"{BASE_URL}/albums/{album_id}/tracks"
         response = requests.get(url, headers=self._get_headers())
         return response.json()
+
+    def get_playlists(self, user_name):
+
+        more_results = True
+        offset = 0
+        limit = 25
+        all_playlists = []
+        while more_results:
+            # spotify:user:joeman5683
+            url = f"{BASE_URL}/users/{user_name}/playlists"
+            params = {
+                "limit": limit,
+                "offset": offset
+            }
+
+            response = requests.get(url, params=params, headers=self._get_headers())
+            results = response.json()
+            playlists = results.get("items", [])
+
+            if len(playlists):
+                more_results = True
+                offset = offset + limit
+                all_playlists.extend(playlists)
+            else:
+                more_results = False
+
+        return all_playlists

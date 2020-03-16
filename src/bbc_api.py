@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import logging
 import sys
 
+from dateutil.parser import parse
+
 EPISODE_URL = "https://www.bbc.co.uk/programmes/b03hjfww/episodes/player"
 
 logger = logging.getLogger(__name__)
@@ -40,7 +42,15 @@ def fetch_playlist_from_program(program_id):
 
     player_soup = BeautifulSoup(player_page_response.content)
     tracks = player_soup.find_all("div", "segment__track")
-    return list(filter(lambda details: details, map(lambda track: _parse_track_from_span(track), tracks)))
+    program_info = player_soup.find_all("div", "broadcast-event__time beta")
+
+    if program_info:
+        program_date = program_info[0].attrs.get('content', "")
+        if program_date:
+            dt = parse(program_date)
+            program_name = f"taggart minus taggart {dt.month}/{dt.day}/{dt.year}"
+
+    return program_name, list(filter(lambda details: details, map(lambda track: _parse_track_from_span(track), tracks)))
 
 
 def fetch_program_names():
