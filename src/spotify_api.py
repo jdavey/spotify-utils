@@ -1,4 +1,5 @@
 import requests
+import json
 
 BASE_URL = "https://api.spotify.com/v1"
 client_id = ""
@@ -26,7 +27,7 @@ class SpotifyApi:
         search_url = "%s/search" % BASE_URL
         search_response = requests.get(search_url, params=params, headers=self._get_headers())
         if search_response.status_code != 200:
-            raise Exception(f"Bad status code {search_response.status_code}")
+            raise Exception(f"Bad status code {search_response.status_code} {search_url} {json.dumps(params)}")
 
         search_payload = search_response.json()
         return search_payload
